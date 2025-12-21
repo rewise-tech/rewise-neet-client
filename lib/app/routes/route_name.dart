@@ -1,0 +1,9 @@
+const String loginRoute = 'login';
+const String singUpRoute = 'signup';
+const String homeRoute = 'home';
+const String settingRoute = 'setting';
+const String profileRoute = 'profile';
+const String learnRoute = 'learn';
+const String practiceRoute = 'practice';
+const String progressRoute = 'progress';
+const String myAccountRoute = 'my-account';
