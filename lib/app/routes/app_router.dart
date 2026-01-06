@@ -6,10 +6,13 @@ import 'package:rewise_neet/features/auth/presentation/state/auth_state.dart';
 import 'package:rewise_neet/features/auth/presentation/pages/login_page.dart';
 import 'package:rewise_neet/features/home/presentation/pages/home_page.dart';
 import 'package:rewise_neet/features/learn/presentation/pages/learn_page.dart';
+import 'package:rewise_neet/features/learn/presentation/pages/subjects_page.dart';
+import 'package:rewise_neet/features/learn/presentation/pages/chapters_page.dart';
 import 'package:rewise_neet/features/practice/presentation/pages/practice_page.dart';
 import 'package:rewise_neet/features/progress/presentation/pages/progress_page.dart';
 import 'package:rewise_neet/features/profile/presentation/pages/profile_page.dart';
 import 'package:rewise_neet/features/profile/presentation/pages/my_account_page.dart';
+import 'package:rewise_neet/features/learn/data/dto/response/subjects_response.dart';
 import '../main_screen.dart';
 import 'route_name.dart';
 
@@ -53,6 +56,23 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/$myAccountRoute',
         name: myAccountRoute,
         builder: (context, state) => const MyAccountPage(),
+      ),
+
+      // Subjects Route
+      GoRoute(
+        path: '/$subjectsRoute',
+        name: subjectsRoute,
+        builder: (context, state) => const SubjectsPage(),
+      ),
+
+      // Chapters Route
+      GoRoute(
+        path: '/$chaptersRoute',
+        name: chaptersRoute,
+        builder: (context, state) {
+          final subject = state.extra as SubjectsResponse;
+          return ChaptersPage(subject: subject);
+        },
       ),
 
       // Main App Shell with Bottom Navigation
