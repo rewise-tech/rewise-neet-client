@@ -5,4 +5,6 @@ class Endpoint {
   static const String getAllQuestions = '/api/questions/';
 
   static const String getAllSubjects = '/api/subjects/';
+
+  static const String searchQuestions = '/api/questions/search';
 }

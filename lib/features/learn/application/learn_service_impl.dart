@@ -3,6 +3,7 @@ import 'package:multiple_result/multiple_result.dart';
 import 'package:rewise_neet/common/exception/failure.dart';
 import 'package:rewise_neet/features/learn/application/learn_service.dart';
 import 'package:rewise_neet/features/learn/data/dto/response/subjects_response.dart';
+import 'package:rewise_neet/features/learn/data/dto/response/questions_response.dart';
 import 'package:rewise_neet/features/learn/data/repository/learn_repository.dart';
 import 'package:rewise_neet/features/learn/data/repository/learn_repository_impl.dart';
 
@@ -19,6 +20,34 @@ final class LearnServiceImpl implements LearnService {
   Future<Result<List<SubjectsResponse>, Failure>> getSubjects() async {
     try {
       final response = await _learnRepository.getSubjects();
+      return Success(response);
+    } on Failure catch (e) {
+      return Error(e);
+    } catch (e, s) {
+      return Error(
+        Failure(
+          message: e.toString(),
+          exception: e as Exception,
+          stackTrace: s,
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<Result<List<QuestionsResponse>, Failure>> searchQuestions({
+    String? year,
+    String? source,
+    String? subject,
+    String? chapter,
+  }) async {
+    try {
+      final response = await _learnRepository.searchQuestions(
+        year: year,
+        source: source,
+        subject: subject,
+        chapter: chapter,
+      );
       return Success(response);
     } on Failure catch (e) {
       return Error(e);

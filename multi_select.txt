@@ -1,0 +1,84 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Option Selector',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(colorSchemeSeed: Colors.blue),
+      home: const OptionsPage(),
+    );
+  }
+}
+
+class OptionsPage extends StatefulWidget {
+  const OptionsPage({super.key});
+
+  @override
+  State<OptionsPage> createState() => _OptionsPageState();
+}
+
+class _OptionsPageState extends State<OptionsPage> {
+  // Use a Set to store indices of selected options, allowing multiple selections.
+  Set<int> selectedIndices = {};
+
+  final List<String> options = [
+    'Option One',
+    'Option Two',
+    'Option Three',
+    'Option Four',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Select Options'),
+      ),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: options.length,
+        itemBuilder: (BuildContext context, int index) {
+          // Check if the current option's index is in the set of selected indices.
+          final bool isSelected = selectedIndices.contains(index);
+
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                // Toggle the selection state of the tapped option.
+                if (isSelected) {
+                  selectedIndices.remove(index);
+                } else {
+                  selectedIndices.add(index);
+                }
+              });
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              decoration: BoxDecoration(
+                color: isSelected ? Colors.blue : Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Center(
+                child: Text(
+                  options[index],
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: isSelected ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}

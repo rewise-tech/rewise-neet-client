@@ -6,6 +6,7 @@ const String profileRoute = 'profile';
 const String learnRoute = 'learn';
 const String subjectsRoute = 'subjects';
 const String chaptersRoute = 'chapters';
+const String questionsRoute = 'questions';
 const String practiceRoute = 'practice';
 const String progressRoute = 'progress';
 const String myAccountRoute = 'my-account';

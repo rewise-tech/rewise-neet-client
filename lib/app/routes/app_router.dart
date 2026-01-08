@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rewise_neet/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:rewise_neet/features/auth/presentation/state/auth_state.dart';
+// import 'package:rewise_neet/features/auth/presentation/controllers/auth_controller.dart';
+// import 'package:rewise_neet/features/auth/presentation/state/auth_state.dart';
 import 'package:rewise_neet/features/auth/presentation/pages/login_page.dart';
 import 'package:rewise_neet/features/home/presentation/pages/home_page.dart';
 import 'package:rewise_neet/features/learn/presentation/pages/learn_page.dart';
 import 'package:rewise_neet/features/learn/presentation/pages/subjects_page.dart';
 import 'package:rewise_neet/features/learn/presentation/pages/chapters_page.dart';
+import 'package:rewise_neet/features/learn/presentation/pages/questions_page.dart';
 import 'package:rewise_neet/features/practice/presentation/pages/practice_page.dart';
 import 'package:rewise_neet/features/progress/presentation/pages/progress_page.dart';
 import 'package:rewise_neet/features/profile/presentation/pages/profile_page.dart';
@@ -18,15 +19,15 @@ import 'route_name.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   //
-  final authState = ref.watch(authControlProvider);
+  // final authState = ref.watch(authControlProvider);
 
   return GoRouter(
     // initialLocation: '/$loginRoute',
     initialLocation: '/$homeRoute',
     redirect: (context, state) {
-      final isAuthenticated = authState.isAuthenticated;
-      final isAuthLoading = authState.status == AuthStatus.initial;
-      final isGoingToLogin = state.matchedLocation == '/$loginRoute';
+      // final isAuthenticated = authState.isAuthenticated;
+      // final isAuthLoading = authState.status == AuthStatus.initial;
+      // final isGoingToLogin = state.matchedLocation == '/$loginRoute';
 
       // // If loading, stay on current page
       // if (isAuthLoading) return null;
@@ -72,6 +73,20 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final subject = state.extra as SubjectsResponse;
           return ChaptersPage(subject: subject);
+        },
+      ),
+
+      // Questions Route
+      GoRoute(
+        path: '/$questionsRoute',
+        name: questionsRoute,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          return QuestionsPage(
+            chapter: extra['chapter'],
+            className: extra['className'],
+            subjectName: extra['subjectName'],
+          );
         },
       ),
 
