@@ -23,6 +23,95 @@ class QuestionsPage extends ConsumerStatefulWidget {
 }
 
 class _QuestionsPageState extends ConsumerState<QuestionsPage> {
+  // Show Bottom Drawer for Solution
+  void _showBottomDrawer(BuildContext context, dynamic question) {
+    final state = ref.watch(learnControllerProvider);
+
+    // Check if user has selected an option
+    if (state.selectedOptionIndex == -1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please select an answer'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Close button
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton.filledTonal(
+                  iconSize: 20,
+                  icon: Icon(Icons.close, color: Colors.red),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+              //Answer
+              Text(
+                "Answer: ${question.answer ?? 'N/A'}",
+                textAlign: TextAlign.start,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+
+              const SizedBox(height: 8),
+              // Solution
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: colorScheme.outlineVariant,
+                    width: 1,
+                  ),
+                  color: colorScheme.surface,
+                ),
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                  question.solution ?? 'No solution available',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurface,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _previousQuestion() {
+    ref.read(learnControllerProvider.notifier).previousQuestion();
+  }
+
+  void _nextQuestion() {
+    ref.read(learnControllerProvider.notifier).nextQuestion();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -173,31 +262,51 @@ class _QuestionsPageState extends ConsumerState<QuestionsPage> {
             border: Border(top: BorderSide(color: colorScheme.outlineVariant)),
           ),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: state.currentQuestionIndex > 0
-                      ? () => ref
-                            .read(learnControllerProvider.notifier)
-                            .previousQuestion()
-                      : null,
-                  icon: const Icon(Icons.arrow_back),
-                  label: const Text('Previous'),
+              const Spacer(),
+              //Previous Button
+              IconButton.filled(
+                iconSize: 30,
+                disabledColor: colorScheme.primary.withValues(alpha: 0.5),
+                color: colorScheme.primary,
+                onPressed: state.currentQuestionIndex > 0
+                    ? _previousQuestion
+                    : null,
+                icon: Icon(Icons.navigate_before, color: colorScheme.onPrimary),
+              ),
+              const SizedBox(width: 16),
+              //Solution Button
+              OutlinedButton.icon(
+                onPressed: () => _showBottomDrawer(context, currentQuestion),
+                label: const Text('Solution'),
+                icon: const Icon(Icons.lightbulb_outline),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: colorScheme.primary,
+                  side: BorderSide(color: colorScheme.primary, width: 1.5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30,
+                    vertical: 5,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  textStyle: Theme.of(context).textTheme.labelLarge,
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed:
-                      state.currentQuestionIndex < state.questions.length - 1
-                      ? () => ref
-                            .read(learnControllerProvider.notifier)
-                            .nextQuestion()
-                      : null,
-                  icon: const Icon(Icons.arrow_forward),
-                  label: const Text('Next'),
-                ),
+              const SizedBox(width: 16),
+              //Next Button
+              IconButton.filled(
+                iconSize: 30,
+                disabledColor: colorScheme.primary.withValues(alpha: 0.5),
+                color: colorScheme.primary,
+                onPressed:
+                    state.currentQuestionIndex < state.questions.length - 1
+                    ? _nextQuestion
+                    : null,
+                icon: Icon(Icons.navigate_next, color: colorScheme.onPrimary),
               ),
+              const Spacer(),
             ],
           ),
         ),

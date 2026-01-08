@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LearnState {
 
- bool get isLoading; String? get error; List<SubjectsResponse> get subjects; List<QuestionsResponse> get questions; int get currentQuestionIndex;
+ bool get isLoading; String? get error; List<SubjectsResponse> get subjects; List<QuestionsResponse> get questions; int get currentQuestionIndex; int get selectedOptionIndex;
 /// Create a copy of LearnState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $LearnStateCopyWith<LearnState> get copyWith => _$LearnStateCopyWithImpl<LearnSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LearnState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&const DeepCollectionEquality().equals(other.subjects, subjects)&&const DeepCollectionEquality().equals(other.questions, questions)&&(identical(other.currentQuestionIndex, currentQuestionIndex) || other.currentQuestionIndex == currentQuestionIndex));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LearnState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&const DeepCollectionEquality().equals(other.subjects, subjects)&&const DeepCollectionEquality().equals(other.questions, questions)&&(identical(other.currentQuestionIndex, currentQuestionIndex) || other.currentQuestionIndex == currentQuestionIndex)&&(identical(other.selectedOptionIndex, selectedOptionIndex) || other.selectedOptionIndex == selectedOptionIndex));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,error,const DeepCollectionEquality().hash(subjects),const DeepCollectionEquality().hash(questions),currentQuestionIndex);
+int get hashCode => Object.hash(runtimeType,isLoading,error,const DeepCollectionEquality().hash(subjects),const DeepCollectionEquality().hash(questions),currentQuestionIndex,selectedOptionIndex);
 
 @override
 String toString() {
-  return 'LearnState(isLoading: $isLoading, error: $error, subjects: $subjects, questions: $questions, currentQuestionIndex: $currentQuestionIndex)';
+  return 'LearnState(isLoading: $isLoading, error: $error, subjects: $subjects, questions: $questions, currentQuestionIndex: $currentQuestionIndex, selectedOptionIndex: $selectedOptionIndex)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $LearnStateCopyWith<$Res>  {
   factory $LearnStateCopyWith(LearnState value, $Res Function(LearnState) _then) = _$LearnStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, String? error, List<SubjectsResponse> subjects, List<QuestionsResponse> questions, int currentQuestionIndex
+ bool isLoading, String? error, List<SubjectsResponse> subjects, List<QuestionsResponse> questions, int currentQuestionIndex, int selectedOptionIndex
 });
 
 
@@ -62,13 +62,14 @@ class _$LearnStateCopyWithImpl<$Res>
 
 /// Create a copy of LearnState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? error = freezed,Object? subjects = null,Object? questions = null,Object? currentQuestionIndex = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? error = freezed,Object? subjects = null,Object? questions = null,Object? currentQuestionIndex = null,Object? selectedOptionIndex = null,}) {
   return _then(_self.copyWith(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,subjects: null == subjects ? _self.subjects : subjects // ignore: cast_nullable_to_non_nullable
 as List<SubjectsResponse>,questions: null == questions ? _self.questions : questions // ignore: cast_nullable_to_non_nullable
 as List<QuestionsResponse>,currentQuestionIndex: null == currentQuestionIndex ? _self.currentQuestionIndex : currentQuestionIndex // ignore: cast_nullable_to_non_nullable
+as int,selectedOptionIndex: null == selectedOptionIndex ? _self.selectedOptionIndex : selectedOptionIndex // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -154,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  String? error,  List<SubjectsResponse> subjects,  List<QuestionsResponse> questions,  int currentQuestionIndex)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  String? error,  List<SubjectsResponse> subjects,  List<QuestionsResponse> questions,  int currentQuestionIndex,  int selectedOptionIndex)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LearnState() when $default != null:
-return $default(_that.isLoading,_that.error,_that.subjects,_that.questions,_that.currentQuestionIndex);case _:
+return $default(_that.isLoading,_that.error,_that.subjects,_that.questions,_that.currentQuestionIndex,_that.selectedOptionIndex);case _:
   return orElse();
 
 }
@@ -175,10 +176,10 @@ return $default(_that.isLoading,_that.error,_that.subjects,_that.questions,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  String? error,  List<SubjectsResponse> subjects,  List<QuestionsResponse> questions,  int currentQuestionIndex)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  String? error,  List<SubjectsResponse> subjects,  List<QuestionsResponse> questions,  int currentQuestionIndex,  int selectedOptionIndex)  $default,) {final _that = this;
 switch (_that) {
 case _LearnState():
-return $default(_that.isLoading,_that.error,_that.subjects,_that.questions,_that.currentQuestionIndex);case _:
+return $default(_that.isLoading,_that.error,_that.subjects,_that.questions,_that.currentQuestionIndex,_that.selectedOptionIndex);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +196,10 @@ return $default(_that.isLoading,_that.error,_that.subjects,_that.questions,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  String? error,  List<SubjectsResponse> subjects,  List<QuestionsResponse> questions,  int currentQuestionIndex)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  String? error,  List<SubjectsResponse> subjects,  List<QuestionsResponse> questions,  int currentQuestionIndex,  int selectedOptionIndex)?  $default,) {final _that = this;
 switch (_that) {
 case _LearnState() when $default != null:
-return $default(_that.isLoading,_that.error,_that.subjects,_that.questions,_that.currentQuestionIndex);case _:
+return $default(_that.isLoading,_that.error,_that.subjects,_that.questions,_that.currentQuestionIndex,_that.selectedOptionIndex);case _:
   return null;
 
 }
@@ -210,7 +211,7 @@ return $default(_that.isLoading,_that.error,_that.subjects,_that.questions,_that
 
 
 class _LearnState implements LearnState {
-  const _LearnState({this.isLoading = false, this.error, final  List<SubjectsResponse> subjects = const [], final  List<QuestionsResponse> questions = const [], this.currentQuestionIndex = 0}): _subjects = subjects,_questions = questions;
+  const _LearnState({this.isLoading = false, this.error, final  List<SubjectsResponse> subjects = const [], final  List<QuestionsResponse> questions = const [], this.currentQuestionIndex = 0, this.selectedOptionIndex = -1}): _subjects = subjects,_questions = questions;
   
 
 @override@JsonKey() final  bool isLoading;
@@ -230,6 +231,7 @@ class _LearnState implements LearnState {
 }
 
 @override@JsonKey() final  int currentQuestionIndex;
+@override@JsonKey() final  int selectedOptionIndex;
 
 /// Create a copy of LearnState
 /// with the given fields replaced by the non-null parameter values.
@@ -241,16 +243,16 @@ _$LearnStateCopyWith<_LearnState> get copyWith => __$LearnStateCopyWithImpl<_Lea
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LearnState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&const DeepCollectionEquality().equals(other._subjects, _subjects)&&const DeepCollectionEquality().equals(other._questions, _questions)&&(identical(other.currentQuestionIndex, currentQuestionIndex) || other.currentQuestionIndex == currentQuestionIndex));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LearnState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&const DeepCollectionEquality().equals(other._subjects, _subjects)&&const DeepCollectionEquality().equals(other._questions, _questions)&&(identical(other.currentQuestionIndex, currentQuestionIndex) || other.currentQuestionIndex == currentQuestionIndex)&&(identical(other.selectedOptionIndex, selectedOptionIndex) || other.selectedOptionIndex == selectedOptionIndex));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,error,const DeepCollectionEquality().hash(_subjects),const DeepCollectionEquality().hash(_questions),currentQuestionIndex);
+int get hashCode => Object.hash(runtimeType,isLoading,error,const DeepCollectionEquality().hash(_subjects),const DeepCollectionEquality().hash(_questions),currentQuestionIndex,selectedOptionIndex);
 
 @override
 String toString() {
-  return 'LearnState(isLoading: $isLoading, error: $error, subjects: $subjects, questions: $questions, currentQuestionIndex: $currentQuestionIndex)';
+  return 'LearnState(isLoading: $isLoading, error: $error, subjects: $subjects, questions: $questions, currentQuestionIndex: $currentQuestionIndex, selectedOptionIndex: $selectedOptionIndex)';
 }
 
 
@@ -261,7 +263,7 @@ abstract mixin class _$LearnStateCopyWith<$Res> implements $LearnStateCopyWith<$
   factory _$LearnStateCopyWith(_LearnState value, $Res Function(_LearnState) _then) = __$LearnStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, String? error, List<SubjectsResponse> subjects, List<QuestionsResponse> questions, int currentQuestionIndex
+ bool isLoading, String? error, List<SubjectsResponse> subjects, List<QuestionsResponse> questions, int currentQuestionIndex, int selectedOptionIndex
 });
 
 
@@ -278,13 +280,14 @@ class __$LearnStateCopyWithImpl<$Res>
 
 /// Create a copy of LearnState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? error = freezed,Object? subjects = null,Object? questions = null,Object? currentQuestionIndex = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? error = freezed,Object? subjects = null,Object? questions = null,Object? currentQuestionIndex = null,Object? selectedOptionIndex = null,}) {
   return _then(_LearnState(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,subjects: null == subjects ? _self._subjects : subjects // ignore: cast_nullable_to_non_nullable
 as List<SubjectsResponse>,questions: null == questions ? _self._questions : questions // ignore: cast_nullable_to_non_nullable
 as List<QuestionsResponse>,currentQuestionIndex: null == currentQuestionIndex ? _self.currentQuestionIndex : currentQuestionIndex // ignore: cast_nullable_to_non_nullable
+as int,selectedOptionIndex: null == selectedOptionIndex ? _self.selectedOptionIndex : selectedOptionIndex // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }

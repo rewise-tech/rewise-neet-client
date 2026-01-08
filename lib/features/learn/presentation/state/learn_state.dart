@@ -12,5 +12,6 @@ abstract class LearnState with _$LearnState {
     @Default([]) List<SubjectsResponse> subjects,
     @Default([]) List<QuestionsResponse> questions,
     @Default(0) int currentQuestionIndex,
+    @Default(-1) int selectedOptionIndex,
   }) = _LearnState;
 }

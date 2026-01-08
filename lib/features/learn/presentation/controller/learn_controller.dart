@@ -66,6 +66,7 @@ class LearnController extends Notifier<LearnState> {
     if (state.currentQuestionIndex < state.questions.length - 1) {
       state = state.copyWith(
         currentQuestionIndex: state.currentQuestionIndex + 1,
+        selectedOptionIndex: -1,
       );
     }
   }
@@ -74,7 +75,12 @@ class LearnController extends Notifier<LearnState> {
     if (state.currentQuestionIndex > 0) {
       state = state.copyWith(
         currentQuestionIndex: state.currentQuestionIndex - 1,
+        selectedOptionIndex: -1,
       );
     }
+  }
+
+  void selectOption(int optionIndex) {
+    state = state.copyWith(selectedOptionIndex: optionIndex);
   }
 }

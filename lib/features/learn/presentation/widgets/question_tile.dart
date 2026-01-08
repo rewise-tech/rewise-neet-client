@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:latext/latext.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rewise_neet/common/utils/strings_utils.dart';
 import 'package:rewise_neet/features/learn/data/dto/response/questions_response.dart';
+import 'package:rewise_neet/features/learn/presentation/controller/learn_controller.dart';
 
-class QuestionTile extends StatefulWidget {
+class QuestionTile extends ConsumerWidget {
   final QuestionsResponse question;
   final String className;
   final String subjectName;
@@ -15,17 +18,12 @@ class QuestionTile extends StatefulWidget {
   });
 
   @override
-  State<QuestionTile> createState() => _QuestionTileState();
-}
-
-class _QuestionTileState extends State<QuestionTile> {
-  //
-  int _selectedOptionIndex = -1;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final selectedOptionIndex = ref
+        .watch(learnControllerProvider)
+        .selectedOptionIndex;
 
     return Column(
       children: [
@@ -40,19 +38,18 @@ class _QuestionTileState extends State<QuestionTile> {
                 runSpacing: 4,
                 children: [
                   _buildInfoChip(
-                    "${widget.className} - ${widget.subjectName}",
+                    "$className - $subjectName",
                     colorScheme,
                     context,
                   ),
                   _buildInfoChip(
-                    replaceUnderscoreWithSpace(widget.question.chapter),
+                    replaceUnderscoreWithSpace(question.chapter),
                     colorScheme,
                     context,
                   ),
-                  if (widget.question.topic != null &&
-                      widget.question.topic!.isNotEmpty)
+                  if (question.topic != null && question.topic!.isNotEmpty)
                     _buildInfoChip(
-                      replaceUnderscoreWithSpace(widget.question.topic),
+                      replaceUnderscoreWithSpace(question.topic),
                       colorScheme,
                       context,
                     ),
@@ -71,17 +68,25 @@ class _QuestionTileState extends State<QuestionTile> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Question Text
-              Text(
-                widget.question.questionText,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.onSurface,
+              //Question Text
+              LaTexT(
+                laTeXCode: Text(
+                  convertToInlineMath(question.questionText),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: colorScheme.onSurface,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
               // Options
-              _buildOptions(widget.question, theme, colorScheme),
+              _buildOptions(
+                question,
+                theme,
+                colorScheme,
+                ref,
+                selectedOptionIndex,
+              ),
               const SizedBox(height: 12),
             ],
           ),
@@ -93,7 +98,6 @@ class _QuestionTileState extends State<QuestionTile> {
   Widget _buildInfoChip(
     String text,
     ColorScheme colorScheme,
-
     BuildContext context,
   ) {
     final theme = Theme.of(context);
@@ -117,20 +121,20 @@ class _QuestionTileState extends State<QuestionTile> {
     QuestionsResponse question,
     ThemeData theme,
     ColorScheme colorScheme,
+    WidgetRef ref,
+    int selectedOptionIndex,
   ) {
     return Column(
       children: question.options.map((option) {
         int index = extractNumberAsInt(option.label);
         int answer = extractNumberAsInt(question.answer);
         final isAnswer = index == answer;
-        final bool isSelected = _selectedOptionIndex == index;
+        final bool isSelected = selectedOptionIndex == index;
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: GestureDetector(
             onTap: () {
-              setState(() {
-                _selectedOptionIndex = index;
-              });
+              ref.read(learnControllerProvider.notifier).selectOption(index);
             },
             child: Container(
               decoration: BoxDecoration(
@@ -148,16 +152,17 @@ class _QuestionTileState extends State<QuestionTile> {
                       fontWeight: FontWeight.normal,
                     ),
                   ),
-                  const SizedBox(width: 2),
-                  Expanded(
-                    child: Text(
-                      option.text,
+                  const SizedBox(width: 10),
+                  LaTexT(
+                    laTeXCode: Text(
+                      convertToInlineMath(option.text),
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurface,
                         fontWeight: FontWeight.normal,
                       ),
                     ),
                   ),
+                  const Spacer(),
                   if (isSelected)
                     isAnswer
                         ? Icon(Icons.check, color: Colors.green, size: 20)
