@@ -1,16 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rewise_neet/app/routes/route_name.dart';
+import 'package:rewise_neet/app/routes/route_state_provider.dart';
 import 'package:rewise_neet/features/learn/data/dto/response/subjects_response.dart';
 import 'package:rewise_neet/features/learn/presentation/widgets/chapter_tile.dart';
 
-class ChaptersPage extends StatelessWidget {
-  final SubjectsResponse subject;
-
-  const ChaptersPage({super.key, required this.subject});
+class ChaptersPage extends ConsumerWidget {
+  const ChaptersPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Get subject from provider if not passed as parameter (e.g., back button case)
+    final displaySubject = ref.watch(routeStateProvider).selectedSubject;
+
+    // If still no subject, show error
+    if (displaySubject == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Chapters'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.go('/$subjectsRoute'),
+          ),
+        ),
+        body: const Center(
+          child: Text('Subject data not available. Please try again.'),
+        ),
+      );
+    }
+
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
@@ -21,9 +40,9 @@ class ChaptersPage extends StatelessWidget {
           onPressed: () => context.go('/$subjectsRoute'),
         ),
       ),
-      body: subject.chapters.isEmpty
+      body: displaySubject.chapters.isEmpty
           ? _buildEmptyState(context)
-          : _buildChaptersList(colorScheme),
+          : _buildChaptersList(colorScheme, displaySubject),
     );
   }
 
@@ -52,19 +71,22 @@ class ChaptersPage extends StatelessWidget {
     );
   }
 
-  Widget _buildChaptersList(ColorScheme colorScheme) {
+  Widget _buildChaptersList(
+    ColorScheme colorScheme,
+    SubjectsResponse displaySubject,
+  ) {
     return Container(
       color: colorScheme.surfaceContainerLowest,
       child: ListView.builder(
-        itemCount: subject.chapters.length,
+        itemCount: displaySubject.chapters.length,
         itemBuilder: (context, index) {
-          final chapter = subject.chapters[index];
+          final chapter = displaySubject.chapters[index];
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: ChapterTile(
               chapter: chapter,
-              className: subject.className,
-              subjectName: subject.subjectName,
+              className: displaySubject.className,
+              subjectName: displaySubject.subjectName,
             ),
           );
         },

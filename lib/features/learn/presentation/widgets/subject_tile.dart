@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rewise_neet/app/routes/route_name.dart';
+import 'package:rewise_neet/app/routes/route_state_provider.dart';
 import 'package:rewise_neet/features/learn/data/dto/response/subjects_response.dart';
 
-class SubjectTile extends StatelessWidget {
+class SubjectTile extends ConsumerWidget {
   final SubjectsResponse subject;
 
   const SubjectTile({super.key, required this.subject});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
     return InkWell(
       onTap: () {
-        context.push('/$chaptersRoute', extra: subject);
+        // Store subject in provider before navigating
+        ref.read(routeStateProvider.notifier).setSelectedSubject(subject);
+        context.push('/$chaptersRoute');
       },
       borderRadius: BorderRadius.circular(12),
       child: Container(

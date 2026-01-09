@@ -14,6 +14,7 @@ class LearnController extends Notifier<LearnState> {
 
   Future<void> getSubjects() async {
     try {
+      state = state.copyWith(isLoading: true);
       final result = await ref.read(learnServiceProvider).getSubjects();
       result.when(
         (success) {
@@ -35,7 +36,11 @@ class LearnController extends Notifier<LearnState> {
     String? chapter,
   }) async {
     try {
-      state = state.copyWith(isLoading: true, currentQuestionIndex: 0);
+      state = state.copyWith(
+        isLoading: true,
+        currentQuestionIndex: 0,
+        selectedOptionIndex: -1,
+      );
       final result = await ref
           .read(learnServiceProvider)
           .searchQuestions(
@@ -46,7 +51,6 @@ class LearnController extends Notifier<LearnState> {
           );
       result.when(
         (success) {
-          print(success);
           state = state.copyWith(
             isLoading: false,
             questions: success,

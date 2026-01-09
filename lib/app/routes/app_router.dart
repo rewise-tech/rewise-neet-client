@@ -13,7 +13,6 @@ import 'package:rewise_neet/features/practice/presentation/pages/practice_page.d
 import 'package:rewise_neet/features/progress/presentation/pages/progress_page.dart';
 import 'package:rewise_neet/features/profile/presentation/pages/profile_page.dart';
 import 'package:rewise_neet/features/profile/presentation/pages/my_account_page.dart';
-import 'package:rewise_neet/features/learn/data/dto/response/subjects_response.dart';
 import '../main_screen.dart';
 import 'route_name.dart';
 
@@ -71,8 +70,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/$chaptersRoute',
         name: chaptersRoute,
         builder: (context, state) {
-          final subject = state.extra as SubjectsResponse;
-          return ChaptersPage(subject: subject);
+          return ChaptersPage();
         },
       ),
 
@@ -81,12 +79,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/$questionsRoute',
         name: questionsRoute,
         builder: (context, state) {
-          final extra = state.extra as Map<String, dynamic>;
-          return QuestionsPage(
-            chapter: extra['chapter'],
-            className: extra['className'],
-            subjectName: extra['subjectName'],
-          );
+          return QuestionsPage();
         },
       ),
 

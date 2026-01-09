@@ -16,9 +16,12 @@ class _SubjectsPageState extends ConsumerState<SubjectsPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      ref.read(learnControllerProvider.notifier).getSubjects();
-    });
+    final state = ref.read(learnControllerProvider);
+    if (state.subjects.isEmpty) {
+      Future.microtask(() {
+        ref.read(learnControllerProvider.notifier).getSubjects();
+      });
+    }
   }
 
   @override

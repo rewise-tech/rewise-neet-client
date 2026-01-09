@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rewise_neet/app/routes/route_name.dart';
+import 'package:rewise_neet/app/routes/route_state_provider.dart';
 import 'package:rewise_neet/common/utils/strings_utils.dart';
 import 'package:rewise_neet/features/learn/data/dto/response/subjects_response.dart';
 
-class ChapterTile extends StatelessWidget {
+class ChapterTile extends ConsumerWidget {
   final Chapter chapter;
   final String className;
   final String subjectName;
@@ -17,20 +19,19 @@ class ChapterTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
     return InkWell(
       onTap: () {
-        context.push(
-          '/$questionsRoute',
-          extra: {
-            'chapter': chapter,
-            'className': className,
-            'subjectName': subjectName,
-          },
-        );
+        // Store chapter data in provider before navigating
+        ref.read(routeStateProvider.notifier).setSelectedChapter({
+          'chapter': chapter,
+          'className': className,
+          'subjectName': subjectName,
+        });
+        context.push('/$questionsRoute');
       },
       borderRadius: BorderRadius.circular(12),
       child: Container(

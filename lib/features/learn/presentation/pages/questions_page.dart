@@ -1,22 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:latext/latext.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rewise_neet/app/routes/route_name.dart';
-import 'package:rewise_neet/features/learn/data/dto/response/subjects_response.dart';
+import 'package:rewise_neet/app/routes/route_state_provider.dart';
+import 'package:rewise_neet/common/utils/strings_utils.dart';
 import 'package:rewise_neet/features/learn/presentation/controller/learn_controller.dart';
 import 'package:rewise_neet/features/learn/presentation/widgets/question_tile.dart';
 
 class QuestionsPage extends ConsumerStatefulWidget {
-  final Chapter chapter;
-  final String className;
-  final String subjectName;
-
-  const QuestionsPage({
-    super.key,
-    required this.chapter,
-    required this.className,
-    required this.subjectName,
-  });
+  const QuestionsPage({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _QuestionsPageState();
@@ -87,12 +80,14 @@ class _QuestionsPageState extends ConsumerState<QuestionsPage> {
                   color: colorScheme.surface,
                 ),
                 padding: const EdgeInsets.all(10),
-                child: Text(
-                  question.solution ?? 'No solution available',
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurface,
-                    fontWeight: FontWeight.w500,
+                child: LaTexT(
+                  laTeXCode: Text(
+                    convertToInlineMath(question.solution),
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurface,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ),
@@ -116,12 +111,17 @@ class _QuestionsPageState extends ConsumerState<QuestionsPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref
-          .read(learnControllerProvider.notifier)
-          .searchQuestions(
-            subject: widget.subjectName,
-            chapter: widget.chapter.formattedName,
-          );
+      final routeState = ref.read(routeStateProvider);
+      final chapter = routeState.selectedChapter?['chapter'];
+      final subjectName = routeState.selectedChapter?['subjectName'];
+
+      final provider = ref.read(learnControllerProvider.notifier);
+      if (chapter != null && subjectName != null) {
+        provider.searchQuestions(
+          subject: subjectName,
+          chapter: chapter.formattedName,
+        );
+      }
     });
   }
 
@@ -133,8 +133,30 @@ class _QuestionsPageState extends ConsumerState<QuestionsPage> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(learnControllerProvider);
+    final routeState = ref.watch(routeStateProvider);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+
+    // Get data from parameter or provider
+    final chapter = routeState.selectedChapter?['chapter'];
+    final className = routeState.selectedChapter?['className'];
+    final subjectName = routeState.selectedChapter?['subjectName'];
+
+    // If still no data, show error
+    if (chapter == null || className == null || subjectName == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Questions'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.go('/$chaptersRoute'),
+          ),
+        ),
+        body: const Center(
+          child: Text('Question data not available. Please try again.'),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -144,12 +166,13 @@ class _QuestionsPageState extends ConsumerState<QuestionsPage> {
           onPressed: () => context.go('/$chaptersRoute'),
         ),
       ),
-      body: _buildBody(state, colorScheme, context),
+      body: _buildBody(state, routeState, colorScheme, context),
     );
   }
 
   Widget _buildBody(
     dynamic state,
+    dynamic routeState,
     ColorScheme colorScheme,
     BuildContext context,
   ) {
@@ -197,6 +220,9 @@ class _QuestionsPageState extends ConsumerState<QuestionsPage> {
         ),
       );
     }
+
+    final className = routeState.selectedChapter?['className'];
+    final subjectName = routeState.selectedChapter?['subjectName'];
 
     final currentQuestion = state.questions[state.currentQuestionIndex];
     final theme = Theme.of(context);
@@ -250,8 +276,8 @@ class _QuestionsPageState extends ConsumerState<QuestionsPage> {
             padding: const EdgeInsets.all(16),
             child: QuestionTile(
               question: currentQuestion,
-              className: widget.className,
-              subjectName: widget.subjectName,
+              className: className,
+              subjectName: subjectName,
             ),
           ),
         ),
@@ -267,7 +293,7 @@ class _QuestionsPageState extends ConsumerState<QuestionsPage> {
               const Spacer(),
               //Previous Button
               IconButton.filled(
-                iconSize: 30,
+                iconSize: 25,
                 disabledColor: colorScheme.primary.withValues(alpha: 0.5),
                 color: colorScheme.primary,
                 onPressed: state.currentQuestionIndex > 0
@@ -289,7 +315,7 @@ class _QuestionsPageState extends ConsumerState<QuestionsPage> {
                     vertical: 5,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(25),
                   ),
                   textStyle: Theme.of(context).textTheme.labelLarge,
                 ),
@@ -297,7 +323,7 @@ class _QuestionsPageState extends ConsumerState<QuestionsPage> {
               const SizedBox(width: 16),
               //Next Button
               IconButton.filled(
-                iconSize: 30,
+                iconSize: 25,
                 disabledColor: colorScheme.primary.withValues(alpha: 0.5),
                 color: colorScheme.primary,
                 onPressed:

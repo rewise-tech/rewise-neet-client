@@ -153,16 +153,18 @@ class QuestionTile extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  LaTexT(
-                    laTeXCode: Text(
-                      convertToInlineMath(option.text),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurface,
-                        fontWeight: FontWeight.normal,
+                  Expanded(
+                    child: LaTexT(
+                      laTeXCode: Text(
+                        convertToInlineMath(option.text),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurface,
+                          fontWeight: FontWeight.normal,
+                        ),
                       ),
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(width: 8),
                   if (isSelected)
                     isAnswer
                         ? Icon(Icons.check, color: Colors.green, size: 20)
