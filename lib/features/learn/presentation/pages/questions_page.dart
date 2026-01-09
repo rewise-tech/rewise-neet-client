@@ -142,11 +142,13 @@ class _QuestionsPageState extends ConsumerState<QuestionsPage> {
     final className = routeState.selectedChapter?['className'];
     final subjectName = routeState.selectedChapter?['subjectName'];
 
+    // final title = '$className - $subjectName';
+
     // If still no data, show error
     if (chapter == null || className == null || subjectName == null) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Questions'),
+          title: const Text("Questions"),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => context.go('/$chaptersRoute'),
@@ -160,7 +162,7 @@ class _QuestionsPageState extends ConsumerState<QuestionsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Questions'),
+        title: const Text("Questions"),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go('/$chaptersRoute'),
@@ -227,116 +229,133 @@ class _QuestionsPageState extends ConsumerState<QuestionsPage> {
     final currentQuestion = state.questions[state.currentQuestionIndex];
     final theme = Theme.of(context);
 
-    return Column(
-      children: [
-        // Progress indicator
-        Container(
-          padding: const EdgeInsets.all(16),
-          color: colorScheme.surfaceContainerLowest,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Question ${state.currentQuestionIndex + 1} of ${state.questions.length}',
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
+    return GestureDetector(
+      onHorizontalDragEnd: (DragEndDetails details) {
+        if (details.primaryVelocity! > 0) {
+          // Swiped right
+          _previousQuestion();
+        } else if (details.primaryVelocity! < 0) {
+          // Swiped left
+          _nextQuestion();
+        }
+      },
+      child: Column(
+        children: [
+          // Progress indicator
+          Container(
+            padding: const EdgeInsets.all(16),
+            color: colorScheme.surfaceContainerLowest,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Question ${state.currentQuestionIndex + 1} of ${state.questions.length}',
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
-                  ),
-                  Text(
-                    '${(((state.currentQuestionIndex + 1) / state.questions.length) * 100).toStringAsFixed(0)}%',
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: colorScheme.primary,
-                      fontWeight: FontWeight.bold,
+                    Text(
+                      '${(((state.currentQuestionIndex + 1) / state.questions.length) * 100).toStringAsFixed(0)}%',
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: LinearProgressIndicator(
-                  value:
-                      (state.currentQuestionIndex + 1) / state.questions.length,
-                  minHeight: 4,
-                  backgroundColor: colorScheme.outlineVariant,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    colorScheme.primary,
+                  ],
+                ),
+                const SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value:
+                        (state.currentQuestionIndex + 1) /
+                        state.questions.length,
+                    minHeight: 4,
+                    backgroundColor: colorScheme.outlineVariant,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      colorScheme.primary,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
-        // Question content
-        Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: QuestionTile(
-              question: currentQuestion,
-              className: className,
-              subjectName: subjectName,
+              ],
             ),
           ),
-        ),
-        // Navigation buttons
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            border: Border(top: BorderSide(color: colorScheme.outlineVariant)),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Spacer(),
-              //Previous Button
-              IconButton.filled(
-                iconSize: 25,
-                disabledColor: colorScheme.primary.withValues(alpha: 0.5),
-                color: colorScheme.primary,
-                onPressed: state.currentQuestionIndex > 0
-                    ? _previousQuestion
-                    : null,
-                icon: Icon(Icons.navigate_before, color: colorScheme.onPrimary),
+          // Question content
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: QuestionTile(
+                question: currentQuestion,
+                className: className,
+                subjectName: subjectName,
               ),
-              const SizedBox(width: 16),
-              //Solution Button
-              OutlinedButton.icon(
-                onPressed: () => _showBottomDrawer(context, currentQuestion),
-                label: const Text('Solution'),
-                icon: const Icon(Icons.lightbulb_outline),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: colorScheme.primary,
-                  side: BorderSide(color: colorScheme.primary, width: 1.5),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 5,
+            ),
+          ),
+          // Navigation buttons
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(color: colorScheme.outlineVariant),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Spacer(),
+                //Previous Button
+                IconButton.filled(
+                  iconSize: 25,
+                  disabledColor: colorScheme.primary.withValues(alpha: 0.5),
+                  color: colorScheme.primary,
+                  onPressed: state.currentQuestionIndex > 0
+                      ? _previousQuestion
+                      : null,
+                  icon: Icon(
+                    Icons.navigate_before,
+                    color: colorScheme.onPrimary,
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  textStyle: Theme.of(context).textTheme.labelLarge,
                 ),
-              ),
-              const SizedBox(width: 16),
-              //Next Button
-              IconButton.filled(
-                iconSize: 25,
-                disabledColor: colorScheme.primary.withValues(alpha: 0.5),
-                color: colorScheme.primary,
-                onPressed:
-                    state.currentQuestionIndex < state.questions.length - 1
-                    ? _nextQuestion
-                    : null,
-                icon: Icon(Icons.navigate_next, color: colorScheme.onPrimary),
-              ),
-              const Spacer(),
-            ],
+                const SizedBox(width: 16),
+                //Solution Button
+                OutlinedButton.icon(
+                  onPressed: () => _showBottomDrawer(context, currentQuestion),
+                  label: const Text('Solution'),
+                  icon: const Icon(Icons.lightbulb_outline),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: colorScheme.primary,
+                    side: BorderSide(color: colorScheme.primary, width: 1.5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 5,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    textStyle: Theme.of(context).textTheme.labelLarge,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                //Next Button
+                IconButton.filled(
+                  iconSize: 25,
+                  disabledColor: colorScheme.primary.withValues(alpha: 0.5),
+                  color: colorScheme.primary,
+                  onPressed:
+                      state.currentQuestionIndex < state.questions.length - 1
+                      ? _nextQuestion
+                      : null,
+                  icon: Icon(Icons.navigate_next, color: colorScheme.onPrimary),
+                ),
+                const Spacer(),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
